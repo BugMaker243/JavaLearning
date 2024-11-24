@@ -35,9 +35,15 @@
 
 > 下面是JVM的整体流程图，在2.1中也有介绍
 
+第一种形式：
+
 <img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0015.png">
 
+第二种形式：
+
 <img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0003.jpg">
+
+整体结构图：
 
 <img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0014.png">
 
