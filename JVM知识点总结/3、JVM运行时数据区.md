@@ -1736,22 +1736,19 @@ public class StringTest4 {
   >
   > - jdk1.6中
   >     （1）如果串池中有，返回已有的串池中的对象的地址
+  > （2）如果没有，把此对象放入串池，并返回串池中的对象地址
+  >    
+  >- Jdk1.7起
+  >    （1）如果串池中有，返回已有的串池中的对象的地址
+  >   （2）如果没有，则会把对象的引用地址复制一份，放入串池,并返回串池中的引用地址。也就是说会在串池里面新建一个对象，但是这个对象不存具体内容，而是一个地址，这个地址就指向堆中的真实数据，所以会出现下面测试代码中都指向同一个地址的情况，测试代码测试了java8、11、17，都是一样的，改动是从java7开始的，因为jvm将常量池从永久代放到了堆里面，可能是出于节省空间的目的。
+  >    
   >
-  >     （2）如果没有，把此对象放入串池，并返回串池中的对象地址
-  >
-  > - Jdk1.7起
-  >
-  >     （1）如果串池中有，返回已有的串池中的对象的地址
-  >
-  >     （2）如果没有，则会把对象的引用地址复制一份，放入串池,并返回串池中的引用地址。也就是说会在串池里面新建一个对象，但是这个对象不存具体内容，而是一个地址，这个地址就指向堆中的真实数据，所以会出现下面测试代码中都指向同一个地址的情况，测试代码测试了java8、11、17，都是一样的，改动是从java7开始的，因为jvm将常量池从永久代放到了堆里面，可能是出于节省空间的目的。
-  >
+  >    
+  >测试代码一：
   > 
-  >
-  > 测试代码一：
-  >
-  > ```java
+  >```java
   > String s1 = new String("hello") + new String("world"); // 堆中的新对象
-  > // "hello"、"world" 创建到常量池
+  >// "hello"、"world" 创建到常量池
   > // new String 在堆中再创建hello、world 的对象
   > // 堆中hello、world对象相加，得到 hello world 的堆对象
   > String s2 = s1.intern();  // 常量池没有helloworld对象，创建常量池对象指向堆对象
@@ -1768,26 +1765,26 @@ public class StringTest4 {
   > System.out.println("s2: " + System.identityHashCode(s2));
   > System.out.println("s3: " + System.identityHashCode(s3));
   > ```
-  >
+  > 
   > 输出
-  >
-  > ```
+  > 
+  >```
   > true
-  > true
+  >true
   > s1: 990368553
   > s2: 990368553
   > s3: 990368553
   > ```
-  >
+  > 
   > 测试版本：Java8、11、17
-  >
-  > <img src="http://jason243.online/JVM/jvm001.png" />
-  >
-  > 测试代码二：
-  >
-  > ```java
+  > 
+  ><img src="http://jason243.online/JVM/jvm001.png" />
+  > 
+  >测试代码二：
+  > 
+  >```java
   > String s1 = new String("hello") + new String("world"); // 堆中的新对象
-  > //换个位置
+  >//换个位置
   > String s3 = "helloworld"; // 常量池中没有，新建常量池中的对象
   > String s2 = s1.intern();  // 复用常量池中的对象
   > 
@@ -1802,20 +1799,20 @@ public class StringTest4 {
   > System.out.println("s2: " + System.identityHashCode(s2)); // s2 指向常量池
   > System.out.println("s3: " + System.identityHashCode(s3)); // s3 指向常量池
   > ```
-  >
+  > 
   > ```
   > false
-  > true
+  >true
   > s1: 990368553
   > s2: 1480010240
   > s3: 1480010240
   > ```
-  >
+  > 
   > 测试代码三：
-  >
-  > ```java
+  > 
+  >```java
   > String s1 = new String("hello") + new String("world"); // 堆中对象
-  > String s4 = s1; // 复用堆中对象
+  >String s4 = s1; // 复用堆中对象
   > String s2 = s1.intern(); // 常量池没有helloworld对象，创建常量池对象指向堆对象
   > String s5 = s1; // 复用堆中对象
   > String s3 = "helloworld"; // 常量池中存的是指向堆对象的地址，直接按地址找过去
@@ -1828,10 +1825,10 @@ public class StringTest4 {
   > System.out.println("s5: " + System.identityHashCode(s5));
   > 
   > ```
-  >
+  > 
   > ```
   > s1: 990368553
-  > s2: 990368553
+  >s2: 990368553
   > s3: 990368553
   > s4: 990368553
   > s5: 990368553
