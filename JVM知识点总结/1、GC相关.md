@@ -21,7 +21,7 @@
 3. 方法区空间不足
 4. 通过Minor GC后进入老年代的平均大小大于老年代的可用内存
 5. 由Eden区、survivor space0（From Space）区向survivor space1（To Space）区复制时，对象大小大于To Space可用内存，则把该对象转存到老年代，且老年代的可用内存小于该对象大小
-6. CMS、G1等算法执行效果不佳或不满足执行条件。
+6. CMS、G1等算法执行效果不佳或不满足执行条件。（个人补充）
 
 
 
