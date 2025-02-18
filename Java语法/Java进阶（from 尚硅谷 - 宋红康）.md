@@ -77,7 +77,7 @@ public class Student {
 ② 规定：“super(形参列表)”，必须声明在构造器的首行。
 
 ③ 我们前面讲过，在构造器的首行可以使用"this(形参列表)"，调用本类中重载的构造器，
-     结合②，结论：在构造器的首行，"this(形参列表)" 和 "super(形参列表)"只能二选一。
+     结合②，结论：在构造器的首行，**"this(形参列表)" 和 "super(形参列表)"只能二选一**。
 
 ④ 如果在子类构造器的首行既没有显示调用"this(形参列表)"，也没有显式调用"super(形参列表)"，则子类此构造器默认调用"super()"，即调用父类中空参的构造器。
 
@@ -93,32 +93,17 @@ public class Student {
 
 ## 1.3、继承（Inheritance）
 
-### 1.3.1 继承中的语法格式
+### 1.3.1 继承中的基本概念
 
-通过 `extends` 关键字，可以声明一个类B继承另外一个类A，定义格式如下：
+- 通过 `extends` 关键字，可以声明一个类B继承另外一个类A
 
-```java
-[修饰符] class 类A {
-	...
-}
+- 类B，称为子类、派生类(derived class)、SubClass
 
-[修饰符] class 类B extends 类A {
-	...
-}
-
-```
+- 类A，称为父类、超类、基类(base class)、SuperClass
 
 
 
-### 1.3.2 继承中的基本概念
-
-类B，称为子类、派生类(derived class)、SubClass
-
-类A，称为父类、超类、基类(base class)、SuperClass
-
-
-
-### 1.3.3 继承的细节说明
+### 1.3.2 继承的细节说明
 
 **1、子类会继承父类所有的实例变量和实例方法**
 
@@ -134,8 +119,6 @@ public class Student {
 
 **4、Java支持多层继承(继承体系)**
 
-<img src="http://jason243.online/javase_songhongkang/Object/java003.png" alt="image-20220323225441417" style="zoom:67%;" />
-
 **5、一个父类可以同时拥有多个子类**
 
 **6、Java只支持单继承，不支持多重继承**
@@ -149,14 +132,6 @@ public class Student {
 多态性，是面向对象中最重要的概念
 
 **对象的多态性：父类的引用指向子类的对象**
-
-格式：（父类类型：指子类继承的父类类型，或者实现的接口类型）
-
-```java
-父类类型 变量名 = 子类对象；
-```
-
-举例：
 
 ```java
 Person p = new Student();
@@ -180,9 +155,9 @@ Java引用变量有两个类型：`编译时类型`和`运行时类型`。编译
 
 #### 1.4.1.2 多态的好处和弊端
 
-**好处**：变量引用的子类对象不同，执行的方法就不同，实现动态绑定。代码编写更灵活、功能更强大，可维护性和扩展性更好了。
+**好处**：变量引用的子类对象不同，执行的方法就不同，实现**动态绑定**。**代码编写更灵活、功能更强大，可维护性和扩展性更好了**。
 
-**弊端**：**一个引用类型变量如果声明为父类的类型，但实际引用的是子类对象，那么该变量就不能再访问子类中添加的属性和方法。**
+**弊端**：一个引用类型变量如果声明为父类的类型，但实际引用的是子类对象，那么该变量就**不能再访问子类中添加的属性和方法**。
 
 ```java
 Student m = new Student();
@@ -192,6 +167,16 @@ e.school = "pku";	//非法,Person类没有school成员变量
 
 // 属性是在编译时确定的，编译时e为Person类型，没有school成员变量，因而编译错误。
 ```
+
+> 解决方案：
+> 向下转型（Downcasting） ，但需配合 instanceof 检查以避免 ClassCastException。
+>
+> ```java
+>   if (animal instanceof Dog) {
+>       Dog dog = (Dog) animal;
+>       dog.bark();  // 安全调用
+>   }
+> ```
 
 
 
@@ -260,42 +245,7 @@ e.getInfo();	// 调用Student类的getInfo()方法，此时称父亲的方法为
 1. **向上转型**：将子类对象赋值给父类变量（安全、自动完成）。
    - 编译时只能调用父类中声明的方法，运行时实际调用子类的实现。
 2. **向下转型**：将父类变量强制转换为子类类型（可能失败，需要手动完成）。
-
-
-
-**向上转型（Upcasting）**
-
-- **向上转型**是指将子类对象赋值给父类类型的变量。
-- 这是安全的，Java 会自动完成。
-- 转型后，**编译时只能调用父类中声明的方法**，但这些方法在运行时会动态绑定到子类的实现（虚方法机制）。
-
-```java
-// 向上转型：Student对象赋值给Person类型变量
-Person person = new Student();
-```
-
-
-
-**向下转型（Downcasting）**
-
-- **向下转型**是指将父类类型的变量强制转换为子类类型。
-- 这种转型需要手动完成（强制类型转换）。
-- 如果父类变量的实际运行时类型不是目标子类，会抛出 `ClassCastException`。
-
-```java
-// 向上转型
-Person person = new Student();
-
-// 向下转型
-Student student = (Student) person;
-
-// 调用子类特有的方法
-student.study();
-
-// 如果向下转型失败（运行时类型不匹配），会抛出ClassCastException
-Person anotherPerson = new Person();
-// Student anotherStudent = (Student) anotherPerson; // 运行时报错
-```
+   - 如果父类变量的实际运行时类型不是目标子类，会抛出 `ClassCastException`。
 
 
 
@@ -304,36 +254,12 @@ Person anotherPerson = new Person();
 #### 1.4.2.1 方法重载：
 
 - 在同一个类中，允许存在一个以上的同名方法，只要它们的**参数列表不同**即可。
-- **参数列表不同**，意味着参数个数或参数类型的不同。
-
-#### 1.4.2.2 重载的特点：
-
-- 与修饰符、返回值类型无关，**只看参数列表**，且参数列表必须不同（参数个数或参数类型）。
-- 调用时，根据方法参数列表的不同来区别。
 
 #### 1.4.2.3 重载方法调用：
 
 - JVM 通过方法的参数列表，调用匹配的方法。
   1. **先找个数、类型匹配的**。
   2. **再找个数和类型可以兼容的**，如果没有完全匹配的方法，但有多个方法可以兼容，且 JVM 无法判断最佳匹配时将会报错。
-
-```java
-// 调用不明确（报错场景）
-class Test {
-    void print(double a) {
-        System.out.println("double: " + a);
-    }
-
-    void print(Float a) {
-        System.out.println("Float: " + a);
-    }
-
-    public static void main(String[] args) {
-        Test t = new Test();
-        t.print(5); // 报错：无法确定调用哪个方法（double 还是 Float）
-    }
-}
-```
 
 
 
@@ -342,43 +268,26 @@ class Test {
 #### 1.4.3.1 方法重写的要求
 
 1. 子类重写的方法`必须`和父类被重写的方法具有相同的`方法名称`、`参数列表`。
-2. 子类重写的方法的返回值类型`不能大于`父类被重写的方法的返回值类型。（即子类返回值的类型需要与父类相同，对于返回值是非基本类型或void的情况，子类返回值还可以是父类返回值的子类型）。
 
-```java
-class Person {
-    public Person getPerson() {
-        return new Person();
-    }
-}
+2. 子类重写的方法的返回值类型 `不能大于` 父类被重写的方法的返回值类型（即子类返回值的类型需要与父类相同或者返回父类的子类型）
 
-class Student extends Person {
-    @Override
-    public Student getPerson() { // Student 是 Person 的子类，合法
-        return new Student();
-    }
-}
-```
+   > 注意：如果返回值类型是**基本数据类型**和**void**，那么必须是相同
 
-> 注意：如果返回值类型是**基本数据类型**和**void**，那么必须是相同
+3. 子类重写的方法使用的访问权限 `不能小于` 父类被重写的方法的访问权限
 
-3. 子类重写的方法使用的访问权限`不能小于`父类被重写的方法的访问权限。（public > protected > 缺省 > private）
+   > 注意：子类不可见的方法不能重写
 
-> 注意：① 父类私有方法不能重写   ② 跨包的父类缺省的方法也不能重写
->
-> 即子类不可见的方法不能重写
-
-4. 子类方法抛出的异常不能大于父类被重写方法的异常
+4. 子类方法抛出的异常 `不能大于` 父类被重写方法的异常
 
 
 
-**此外，子类与父类中同名同参数的方法必须同时声明为非static的(即为重写)，或者同时声明为static的（不是重写）**。因为static方法是属于类的，子类无法覆盖父类的方法。
+**此外，子类与父类中同名同参数的方法必须同时声明为非static的（重写），或者同时声明为static的（不属于重写）**。因为static方法是属于类的，子类无法覆盖父类的方法。
 
 ```java
 class Parent {
     static void staticMethod() {
         System.out.println("Parent static method");
     }
-
     void instanceMethod() {
         System.out.println("Parent instance method");
     }
@@ -389,7 +298,6 @@ class Child extends Parent {
     static void staticMethod() {
         System.out.println("Child static method");
     }
-
     @Override
     void instanceMethod() {
         System.out.println("Child instance method");
@@ -415,15 +323,8 @@ public class Test {
 }
 ```
 
-- 静态方法：
-  - 静态方法在编译时绑定，调用的是引用变量的类型所属类的方法，而非实际对象的类型的方法。
-  - `pc.staticMethod()` 调用的是 `Parent` 的静态方法，而非 `Child` 的静态方法。
-- 实例方法：
-  - 实例方法是动态绑定，`pc.instanceMethod()` 会根据运行时实际对象类型调用 `Child` 的实现。
 
-
-
-=====
+# =====
 
 # 2、泛型(Generic)
 
@@ -486,13 +387,15 @@ public class TestHasGeneric {
 
   具体格式为：
 
+  ```java
   List<Integer> list = new ArrayList<Integer>();
-
+  
   List<Integer> list = new ArrayList<>(); //类型推断
+  ```
 
 - 泛型，也称为泛型参数，即参数的类型，只能使用引用数据类型进行赋值。（不能使用基本数据类型，可以使用包装类替换）
 
-- 集合声明时，声明泛型参数。在使用集合时，可以具体指明泛型的类型。一旦指明，类或接口内部，凡是使用泛型参数的位置，都指定为具体的参数类型。如果没有指明的话，看做是Object类型。
+- 集合声明一旦指明泛型，类或接口内部，凡是使用泛型参数的位置，都指定为具体的参数类型。如果没有指明的话，看做是Object类型。
 
 
 
@@ -504,8 +407,6 @@ public class TestHasGeneric {
 
 - <类型>的形式我们称为类型参数，这里的"类型"习惯上使用T表示，是Type的缩写。即：<T>。
 - <T>：代表未知的数据类型，我们可以指定为<String>，<Integer>，<Circle>等。
-  - 类比方法的参数的概念，我们把<T>，称为类型形参，将<Circle>称为类型实参，有助于我们理解泛型
-- 这里的T，可以替换成K，V等任意字母。
 
 **2、在哪里可以声明类型变量\<T>**
 
@@ -574,11 +475,6 @@ public static <T> List<T> asList(T... a){
 
 3. **泛型只能使用引用数据类型，不能使用基本数据类型**  
 
-   ```java
-   Box<Integer> intBox = new Box<>(10); // 使用 Integer，而不是 int
-   Box<Double> doubleBox = new Box<>(5.5); // 使用 Double，而不是 double
-   ```
-
 4. **子类继承或实现泛型类时，可以指定具体类型，也可以继续保留泛型**  
 
    ```java
@@ -607,9 +503,10 @@ public static <T> List<T> asList(T... a){
 
 #### 3.2.2 注意
 
-1. **泛型可以有多个参数**  
-   **示例**：
-
+1. **泛型可以有多个参数** 
+   
+**示例**：
+   
    ```java
    public class Pair<K, V> { // 定义泛型类，K 和 V 是两个类型参数
        private K key;
@@ -632,18 +529,16 @@ public static <T> List<T> asList(T... a){
    // 使用 Pair 类
    Pair<String, Integer> pair = new Pair<>("Age", 25);
    System.out.println(pair.getKey() + ": " + pair.getValue()); // 输出：Age: 25
-   ```
-
-2. **JDK 7+ 支持泛型简化写法**  
-   **示例**：
+```
+   
+2. **JDK 7+ 支持泛型推断** 
 
    ```java
    List<String> list = new ArrayList<>(); // 类型推断，省略右侧的 <String>
-   list.add("Hello");
-   
    ```
 
-3. **不能直接创建泛型数组，但可以用类型转换实现**  
+3. **不能直接创建泛型数组，但可以用类型转换实现** 
+
    **示例**：
 
    参考：ArrayList源码中声明：Object[] elementData，而非泛型参数类型数组。
@@ -658,7 +553,8 @@ public static <T> List<T> asList(T... a){
    
    ```
 
-4. **异常类不能是泛型的**  
+4. **异常类不能是泛型的** 
+
    **示例**：
 
    ```java
@@ -671,7 +567,6 @@ public static <T> List<T> asList(T... a){
            super(message);
        }
    }
-   
    ```
 
 5. **不可以在静态方法中使用类的泛型**
@@ -693,7 +588,6 @@ public static <T> List<T> asList(T... a){
 [访问权限]  <泛型>  返回值类型  方法名([泛型标识 参数名称])  [抛出的异常]{
     
 }
-
 ```
 
 - 方法，也可以被泛型化，与其所在的类是否是泛型类没有关系。
@@ -712,17 +606,15 @@ public class DAO {
         return result;
     }
 }
-
-
 ```
 
 
 
 ## 4. 泛型在继承上的体现
 
-如果B是A的一个子类型（子类或者子接口），而G是具有泛型声明的类或接口，G<B>并不是G<A>的子类型！
+如果B是A的一个子类型（子类或者子接口），而G是具有泛型声明的类或接口，G\<B>并不是G\<A>的子类型！
 
-比如：String是Object的子类，但是List<String>并不是List<Object>的子类。
+比如：String是Object的子类，但是List\<String>并不是List\<Object>的子类。
 
 <img src="http://jason243.online/javase_songhongkang/Generic/java002.png" alt="java002" style="zoom:67%;" />
 
@@ -740,14 +632,13 @@ public void testGenericAndSubClass() {
     List<Man> manList = null;
     //personList = manList;(报错)
 }
-
 ```
 
 
 
 ## 5. 通配符的使用
 
-当我们声明一个变量/形参时，这个变量/形参的类型是一个泛型类或泛型接口，例如：Comparator<T>类型，但是我们仍然无法确定这个泛型类或泛型接口的类型变量<T>的具体类型，此时我们考虑使用类型通配符 ? 。
+当我们声明一个变量/形参时，这个变量/形参的类型是一个泛型类或泛型接口，例如：Comparator\<T>类型，但是我们仍然无法确定这个泛型类或泛型接口的类型变量\<T>的具体类型，此时我们考虑使用类型通配符  `?` 。
 
 ### 5.1 通配符的理解
 
@@ -769,7 +660,6 @@ public void testGenericAndSubClass() {
 Collection<?> c = new ArrayList<String>();
 
 c.add(new Object()); // 编译时错误
-
 ```
 
 **泛型的实际存储类型是未知的**
@@ -812,8 +702,6 @@ public static void read(List<?> list) {
         System.out.println(o);
     }
 }
-
-
 ```
 
 
@@ -828,7 +716,6 @@ public static void read(List<?> list) {
 	
 	}
 */
-
 ```
 
 注意点2：编译错误：不能用在泛型类的声明上
@@ -839,14 +726,12 @@ public static void read(List<?> list) {
 
 	}
 */
-
 ```
 
 注意点3：编译错误：不能用在创建对象上，右边属于创建集合对象
 
 ```java
 //	ArrayList<?> list2 = new ArrayList<?>();
-
 ```
 
 
@@ -859,7 +744,7 @@ public static void read(List<?> list) {
 
 - 通配符指定上限：`<? extends 类/接口 >`
 
-  - 使用时指定的类型必须是继承某个类，或者实现某个接口，即<= 
+  - 使用时指定的类型必须是继承某个类（子类），或者实现某个接口，即<= 
 
 - 通配符指定下限：`<? super 类/接口 >`
 
@@ -876,7 +761,6 @@ public static void read(List<?> list) {
   
   <? extends Comparable>
   //只允许泛型为实现Comparable接口的实现类的引用调用
-  
   ```
 
 
@@ -885,7 +769,7 @@ public static void read(List<?> list) {
 
 **含义**
 
-- `? extends T` 表示泛型类型是 `T` **或 T 的子类**。
+- `? extends T` 表示泛型类型是 `T` 或 `T 的子类`。
 - 它的目的是限制一个泛型可以接受的类型，确保类型是 **T 或更小的范围**（子类）。
 
 **特点**
@@ -919,7 +803,6 @@ printNumbers(new ArrayList<Double>());  // Double 是 Number 的子类
 
 ```java
 list.add(new Integer(5)); // 编译错误，泛型类型未知
-
 ```
 
 原因是：`list` 可能是 `ArrayList<Double>`，向其中添加 `Integer` 是不安全的。
@@ -930,7 +813,7 @@ list.add(new Integer(5)); // 编译错误，泛型类型未知
 
 **含义**
 
-- `? super T` 表示泛型类型是 `T` **或 T 的父类**。
+- `? super T` 表示泛型类型是 `T` 或 `T 的父类`。
 - 它的目的是限制一个泛型可以接受的类型，确保类型是 **T 或更大的范围**（父类）。
 
 **特点**
@@ -954,7 +837,6 @@ public void addNumbers(List<? super Integer> list) {
 addNumbers(new ArrayList<Integer>());   // Integer 是 Integer 本身
 addNumbers(new ArrayList<Number>());    // Number 是 Integer 的父类
 addNumbers(new ArrayList<Object>());    // Object 是 Number 的父类
-
 ```
 
 - `list` 的泛型类型必须是 `Integer` 或 `Integer` 的父类（如 `Number`、`Object`）。
@@ -981,8 +863,3 @@ Object obj = list.get(0);  // 合法，只能读取为 Object
 
 - **`extends`（上限）**：你只知道类型是 `T` 或更窄（子类），所以只能安全读取，无法写入。
 - **`super`（下限）**：你只知道类型是 `T` 或更宽（父类），所以可以安全写入 `T` 或其子类，但读取的类型只能保证是 `Object`。
-
-
-
-
-

@@ -35,7 +35,7 @@
 
 ## 1.3 字符类型：char
 
-- char 型数据用来表示通常意义上“`字符`”（占2字节）
+- char 型数据用来表示通常意义上“`字符`”（占2字节，底层使用`UTF-16`编码）
 
 - Java中的所有字符都使用Unicode编码，故一个字符可以存储一个字母，一个汉字，或其他书面语的一个字符。
 
@@ -86,7 +86,7 @@
 
 
 
-======
+# ======
 
 # 2、引用数据类型
 
@@ -123,40 +123,6 @@ String str = "123";
 int num = (int)str;//错误的
 
 int num = Integer.parseInt(str);//正确的，后面才能讲到，借助包装类的方法才能转
-```
-
-### 2.1.3 案例与练习
-
-**案例：公安局身份登记**
-
-要求填写自己的姓名、年龄、性别、体重、婚姻状况（已婚用true表示，单身用false表示）、联系方式等等。
-
-```java
-/**
- * @author 尚硅谷-宋红康
- * @create 12:34
- */
-public class Info {
-    public static void main(String[] args) {
-        String name = "康师傅";
-        int age = 37;
-        char gender = '男';
-        double weight = 145.6;
-        boolean isMarried = true;
-        String phoneNumber = "13112341234";
-
-        System.out.println("姓名：" + name);
-        System.out.println("年龄：" + age);
-        System.out.println("性别：" + gender);
-        System.out.println("体重：" + weight);
-        System.out.println("婚否：" + isMarried);
-        System.out.println("电话：" + phoneNumber);
-		//或者
-        System.out.println("name = " + name + ",age = " + age + "，gender = " + 
-                           gender + ",weight = " + weight + ",isMarried = " + isMarried +
-                           ",phoneNumber = " + phoneNumber);
-    }
-}
 ```
 
 
@@ -223,19 +189,6 @@ arr = {1,2,3,4,5};//错误
 
 **数组变量的初始化和数组元素的赋值操作分开进行，即为动态初始化。**
 
-动态初始化中，只确定了元素的个数（即数组的长度），而元素值此时只是默认值，还并未真正赋自己期望的值。真正期望的数据需要后续单独一个一个赋值。
-
-**格式：**
-
-```java
-数组存储的元素的数据类型[] 数组名字 = new 数组存储的元素的数据类型[长度];
-
-或
-
-数组存储的数据类型[] 数组名字;
-数组名字 = new 数组存储的数据类型[长度];
-```
-
 - [长度]：数组的长度，表示数组容器中可以最多存储多少个元素。
 - **注意：数组有定长特性，长度一旦指定，不可更改。**和水杯道理相同，买了一个2升的水杯，总容量就是2升是固定的。
 
@@ -246,7 +199,6 @@ int[] arr = new int[5];
 
 int[] arr;
 arr = new int[5];
-
 ```
 
 ### 2.2.2  数组的长度
@@ -276,251 +228,97 @@ public static void main(String[] args) {
     arr[0] = 5;
     arr[1] = 6;
     arr[2] = 7;
-    //输出3个索引上的元素值
-    System.out.println(arr[0]);
-    System.out.println(arr[1]);
-    System.out.println(arr[2]);
-    //定义数组变量arr2，将arr的地址赋值给arr2
-    int[] arr2 = arr;
+    
+    int[] arr2 = arr; // 赋值的是引用，浅拷贝
     arr2[1] = 9;
     System.out.println(arr[1]);
 }
 ```
 
- <img src="http://jason243.online/javase_songhongkang/005/images/%E6%95%B0%E7%BB%84%E5%86%85%E5%AD%98%E5%9B%BE3.jpg" style="zoom:67%;" />
-
-### 2.2.5 数组的常见算法
-
-> 见算法笔记“数组的常见算法.md”全部
 
 
+### 2.2.5 Arrays 工具类的详细介绍与使用示例
 
-### 2.2.6 Arrays 工具类的详细介绍与使用示例
+#### 2.2.5.1. **数组元素拼接 Arrays.toString**
 
-Java 中的 `java.util.Arrays` 是一个操作数组的工具类，提供了丰富的方法用于数组的处理，包括排序、查找、比较、复制、填充等功能。以下是对这些功能的详细讲解与示例代码。
-
-------
-
-#### 2.2.6.1. **数组元素拼接 Array.toString**
-
-**功能**
-
-将数组元素拼接成一个字符串形式，返回结果以 `[` 开始，以 `]` 结束，元素之间用 `, ` 分隔。
-
-**方法**
-
-- **`static String toString(int[] a)`**  
-  拼接整型数组。
-- **`static String toString(Object[] a)`**  
+- **`static String toString(int[] a)`** 
+  拼接整型数组
+- **`static String toString(Object[] a)`** 
   拼接对象数组。如果对象未重写 `toString()`，返回类型和哈希值。
 
-**示例代码**
+#### 2.2.5.2. **数组排序 Arrays.sort**
 
-```java
-import java.util.Arrays;
-
-public class ArrayToStringExample {
-    public static void main(String[] args) {
-        int[] intArray = {10, 20, 30, 40};
-        String[] strArray = {"apple", "banana", "cherry"};
-
-        System.out.println(Arrays.toString(intArray));  // 输出: [10, 20, 30, 40]
-        System.out.println(Arrays.toString(strArray));  // 输出: [apple, banana, cherry]
-    }
-}
-```
-
-------
-
-#### 2.2.6.2. **数组排序 Array.sort**
-
-**功能**
-
-对数组进行排序，默认是升序排序。对于对象数组，可以自定义排序规则。
-
-**方法**
-
-- **`static void sort(int[] a)`**  
+- **`static void sort(int[] a)`** 
   对整型数组进行升序排序。
-- **`static void sort(int[] a, int fromIndex, int toIndex)`**  
+- **`static void sort(int[] a, int fromIndex, int toIndex)`** 
   对部分数组（区间 `[fromIndex, toIndex)`）进行升序排序。
-- **`static void sort(Object[] a)`**  
+- **`static void sort(Object[] a)`** 
   对对象数组进行升序排序，要求对象实现了 `Comparable` 接口。
-- **`static <T> void sort(T[] a, Comparator<? super T> c)`**  
+- **`static <T> void sort(T[] a, Comparator<? super T> c)`** 
   使用自定义比较器对对象数组排序。
 
-**示例代码**
+#### 2.2.5.3. **数组元素的二分查找 Arrays.binarySearch**
 
-```java
-import java.util.Arrays;
-
-public class ArraySortExample {
-    public static void main(String[] args) {
-        int[] intArray = {40, 10, 20, 30};
-        Arrays.sort(intArray);
-        System.out.println(Arrays.toString(intArray));  // 输出: [10, 20, 30, 40]
-
-        String[] strArray = {"cherry", "banana", "apple"};
-        Arrays.sort(strArray);
-        System.out.println(Arrays.toString(strArray));  // 输出: [apple, banana, cherry]
-    }
-}
-```
-
-------
-
-#### 2.2.6.3. **数组元素的二分查找 Array.binarySearch**
-
-**功能**
-
-在已排序的数组中查找指定元素的位置。如果找到，返回该元素的索引；如果找不到，返回一个负数。
-
-**方法**
-
-- **`static int binarySearch(int[] a, int key)`**  
+- **`static int binarySearch(int[] a, int key)`** 
   在整型数组中查找 `key` 的位置。
-- **`static int binarySearch(Object[] a, Object key)`**  
+- **`static int binarySearch(Object[] a, Object key)`** 
   在对象数组中查找 `key` 的位置，数组必须是有序的。
 
-**示例代码**
+> **排序算法说明**
+>
+> 1. **基本数据类型（如 int[], double[] 等）**
+>
+> 对于基本数据类型的排序，`Arrays.sort()` 使用了 **双轴快速排序（Dual-Pivot QuickSort）**，该算法由 Vladimir Yaroslavskiy 开发，并在 Java 7 中引入。
+>
+> 2. **引用数据类型（如 String[], Object[] 等）**
+>
+> 对于引用数据类型的排序，`Arrays.sort()` 使用了 **归并排序（TimSort）**。
+>
 
-```java
-import java.util.Arrays;
+#### 2.2.5.4. **数组的复制 Arrays.copyOf**
 
-public class ArrayBinarySearchExample {
-    public static void main(String[] args) {
-        int[] intArray = {10, 20, 30, 40};
-        Arrays.sort(intArray);  // 必须先排序
-        int index = Arrays.binarySearch(intArray, 30);
-        System.out.println(index);  // 输出: 2
-    }
-}
-```
-
-**排序算法说明**
-
-1. **基本数据类型（如 int[], double[] 等）**
-
-对于基本数据类型的排序，`Arrays.sort()` 使用了 **双轴快速排序（Dual-Pivot QuickSort）**，该算法由 Vladimir Yaroslavskiy 开发，并在 Java 7 中引入。
-
-2. **引用数据类型（如 String[], Object[] 等）**
-
-对于引用数据类型的排序，`Arrays.sort()` 使用了 **归并排序（TimSort）**。
-
-
-
-------
-
-#### 2.2.6.4. **数组的复制 Array.copyOf**
-
-**功能**
-
-创建数组的副本，副本可以是完整数组或部分数组。
-
-**方法**
-
-- **`static int[] copyOf(int[] original, int newLength)`**  
+- **`static int[] copyOf(int[] original, int newLength)`** 
   创建一个新的整型数组，长度为 `newLength`。
-- **`static <T> T[] copyOf(T[] original, int newLength)`**  
+  
+- **`static <T> T[] copyOf(T[] original, int newLength)`** 
   创建一个新的泛型数组。
-- **`static int[] copyOfRange(int[] original, int from, int to)`**  
+  
+- **`static int[] copyOfRange(int[] original, int from, int to)`** 
   创建一个新的整型数组，内容为原数组的 `[from, to)` 部分。
-- **`static <T> T[] copyOfRange(T[] original, int from, int to)`**  
+  
+- **`static <T> T[] copyOfRange(T[] original, int from, int to)`** 
   创建一个新的泛型数组。
+  
+  > `Arrays.copyOf` 的调用的是 `System.arraycopy` 方法
+  >
+  > `System.arraycopy` 是 Native方法
+  >
+  > ```java
+  > System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+  > ```
 
-**示例代码**
+#### 2.2.5.5. **比较两个数组是否相等 Arrays.equals**
 
-```java
-import java.util.Arrays;
-
-public class ArrayCopyExample {
-    public static void main(String[] args) {
-        int[] intArray = {10, 20, 30, 40, 50};
-        int[] newArray = Arrays.copyOf(intArray, 3);
-        System.out.println(Arrays.toString(newArray));  // 输出: [10, 20, 30]
-
-        int[] rangeArray = Arrays.copyOfRange(intArray, 1, 4);
-        System.out.println(Arrays.toString(rangeArray));  // 输出: [20, 30, 40]
-    }
-}
-```
-
-------
-
-#### 2.2.6.5. **比较两个数组是否相等 Array.equals**
-
-**功能**
-
-比较两个数组的内容是否完全一致，包括长度和每个位置的元素。
-
-**方法**
-
-- **`static boolean equals(int[] a, int[] a2)`**  
+- **`static boolean equals(int[] a, int[] a2)`** 
   比较两个整型数组。
-- **`static boolean equals(Object[] a, Object[] a2)`**  
+- **`static boolean equals(Object[] a, Object[] a2)`** 
   比较两个对象数组。
 
-**示例代码**
+#### 2.2.5.6. **填充数组 Arrays.fill**
 
-```java
-import java.util.Arrays;
-
-public class ArrayEqualsExample {
-    public static void main(String[] args) {
-        int[] array1 = {10, 20, 30};
-        int[] array2 = {10, 20, 30};
-        System.out.println(Arrays.equals(array1, array2));  // 输出: true
-    }
-}
-```
-
-------
-
-#### 2.2.6.6. **填充数组 Array.fill**
-
-**功能**
-
-将数组的所有元素或部分元素填充为指定的值。
-
-**方法**
-
-- **`static void fill(int[] a, int val)`**  
+- **`static void fill(int[] a, int val)`** 
   用 `val` 填充整个数组。
-- **`static void fill(int[] a, int fromIndex, int toIndex, int val)`**  
+- **`static void fill(int[] a, int fromIndex, int toIndex, int val)`** 
   用 `val` 填充数组的 `[fromIndex, toIndex)` 部分。
 
-**示例代码**
-
-```java
-import java.util.Arrays;
-
-public class ArrayFillExample {
-    public static void main(String[] args) {
-        int[] array = new int[5];
-        Arrays.fill(array, 10);
-        System.out.println(Arrays.toString(array));  // 输出: [10, 10, 10, 10, 10]
-
-        Arrays.fill(array, 2, 4, 20);
-        System.out.println(Arrays.toString(array));  // 输出: [10, 10, 20, 20, 10]
-    }
-}
-```
 
 
-
-
-
-
-
-
-
-======
+# ======
 
 # 3、常用包的使用介绍
 
 ## 3.1 Scanner：键盘输入的实现
 
-- 如何从键盘获取不同类型（基本数据类型、String类型）的变量：使用Scanner类。
 - 键盘输入代码的四个步骤：
   1. 导包：`import java.util.Scanner;`
   2. 创建Scanner类型的对象：`Scanner scan = new Scanner(System.in);`
@@ -541,13 +339,6 @@ import java.util.Scanner;
 public class ScannerTest1 {
 
     public static void main(String[] args) {
-        //② 创建Scanner的对象
-        //Scanner是一个引用数据类型，它的全名称是java.util.Scanner
-        //scanner就是一个引用数据类型的变量了，赋给它的值是一个对象
-        //new Scanner(System.in)是一个new表达式，该表达式的结果是一个对象
-        //引用数据类型  变量 = 对象;
-        //这个等式的意思可以理解为用一个引用数据类型的变量代表一个对象，所以这个变量的名称又称为对象名
-        //我们也把scanner变量叫做scanner对象
         Scanner scanner = new Scanner(System.in);//System.in默认代表键盘输入
         
         //③根据提示，调用Scanner的方法，获取不同类型的变量
@@ -596,11 +387,8 @@ public class ScannerTest1 {
 ```java
 class MathRandomTest {
 	public static void main(String[] args) {
-		double value = Math.random();
-		System.out.println(value);
-
 		//[1,6]
-		int number = (int)(Math.random() * 6) + 1; //
+		int number = (int)(Math.random() * 6) + 1;
 		System.out.println(number);
 	}
 }
@@ -620,7 +408,7 @@ class MathRandomTest {
 
 - 所有对象（包括数组）都实现这个类的方法。
 
-- 如果一个类没有特别指定父类，那么默认则继承自Object类。例如：
+- 如果一个类没有特别指定父类，那么默认则继承自Object类。
 
   
 
@@ -634,26 +422,15 @@ class MathRandomTest {
 
 - 基本类型比较值:只要两个变量的值相等，即为true。
 
-  ```java
-  int a=5; 
-  if(a==6){…}
-  ```
-
 - 引用类型比较引用(是否指向同一个对象)：只有指向同一个对象时，==才返回true。
 
-  ```java
-  Person p1=new Person();  	    
-  Person p2=new Person();
-  if (p1==p2){…}
-  ```
-
-  - 用“==”进行比较时，符号两边的`数据类型必须兼容`(可自动转换的基本数据类型除外)，否则编译出错
+  - 用“==”进行比较时，符号两边的`数据类型必须兼容`(可自动转换的基本数据类型除外)，**否则编译出错**
 
 **（2）equals()：**所有类都继承了Object，也就获得了equals()方法。还可以重写。
 
-- 只能比较引用类型，Object类源码中equals()的作用与“==”相同：比较是否指向同一个对象。	 
+- 只能比较引用类型，**Object类源码中equals()的作用与 “==” 相同**：比较是否指向同一个对象。	 
 
-- 格式:obj1.equals(obj2)
+- `obj1.equals(obj2)`
 
 - 特例：当用equals()方法进行比较时，对类File、String、Date及包装类（Wrapper Class）来说，是比较类型及内容而不考虑引用的是否是同一个对象；
 
@@ -665,43 +442,13 @@ class MathRandomTest {
 
     ​    x.equals(和x不同类型的对象)永远返回是“false”。
 
-- 重写举例：
 
-```java
-@Override
-public boolean equals(Object obj) {
-    if (this == obj)	// 是不是同一个引用
-        return true;
-    if (obj == null)	// 是不是空引用
-        return false;
-    if (getClass() != obj.getClass())	// 两个引用的类是否相同，getClass也是基本方法
-        return false;
-    User other = (User) obj;
-    if (host == null) {
-        if (other.host != null)
-            return false;
-    } else if (!host.equals(other.host))
-        return false;
-    if (password == null) {
-        if (other.password != null)
-            return false;
-    } else if (!password.equals(other.password))
-        return false;
-    if (username == null) {
-        if (other.username != null)
-            return false;
-    } else if (!username.equals(other.username))
-        return false;
-    return true;
-}
-```
-
-**面试题：**==和equals的区别
+##### **\*面试题：**`==` 和 `equals` 的区别
 
 > 从我面试的反馈，85%的求职者“理直气壮”的回答错误…
 
 - == 既可以比较基本类型也可以比较引用类型。对于基本类型就是比较值，对于引用类型就是比较内存地址
-- equals的话，它是属于java.lang.Object类里面的方法，如果该方法没有被重写过默认也是==;我们可以看到String等类的equals方法是被重写过的，而且String类在日常开发中用的比较多，久而久之，形成了equals是比较值的错误观点。
+- equals的话，它是属于java.lang.Object类里面的方法，如果该方法没有被重写过默认也是==；我们可以看到String等类的equals方法是被重写过的，而且String类在日常开发中用的比较多，久而久之，形成了equals是比较值的错误观点。
 - 具体要看自定义类里有没有重写Object的equals方法来判断。
 - 通常情况下，重写equals方法，会比较类中的相应属性是否都相等。
 
@@ -717,8 +464,8 @@ public boolean equals(Object obj) {
 
 ```java
 Date now=new Date();
-System.out.println(“now=”+now);  //相当于
-System.out.println(“now=”+now.toString()); 
+System.out.println(“now=” + now);  //相当于
+System.out.println(“now=” + now.toString()); 
 ```
 
 ③ 如果我们直接System.out.println(对象)，默认会自动调用这个对象的toString()
@@ -727,7 +474,7 @@ System.out.println(“now=”+now.toString());
 	如String 类重写了toString()方法，返回字符串的值。
 
 ```java
-s1="hello";
+s1 = "hello";
 System.out.println(s1);//相当于System.out.println(s1.toString());
 ```
 
@@ -739,34 +486,23 @@ System.out.println(s1);//相当于System.out.println(s1.toString());
 
 需要实现 **Cloneable 接口**，否则会抛出 `CloneNotSupportedException` 异常。
 
+> 即：如果一个类未实现 `Cloneable` 接口，调用 `clone()` 会抛出 `CloneNotSupportedException`
+
 **浅拷贝**：只复制对象本身及其基本属性（或对引用类型复制引用地址）。
 
 **深拷贝**：除了复制对象本身，还复制引用类型属性所指向的对象（需要手动实现深拷贝）。
 
 ```java
-package base002;
-
 class Animal implements Cloneable {
     private String name;
     private int[] favoriteNumbers; // 引用类型字段
 
     // 省略代码
-    ...
-    
-    public Animal(String name, int[] favoriteNumbers) {
-        this.name = name;
-        this.favoriteNumbers = favoriteNumbers;
-    }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone(); // Obeject实现的是浅拷贝
     }
-
-    @Override
-    public String toString() {
-		...
-	}
 
 public class ShallowCopyTest {
     public static void main(String[] args) throws CloneNotSupportedException {
@@ -775,8 +511,8 @@ public class ShallowCopyTest {
         Animal a2 = (Animal) a1.clone();
 
         // 修改克隆对象的引用类型字段
-        a2.getFavoriteNumbers()[0] = 100;
-        a2.setName("朵朵");
+        a2.getFavoriteNumbers()[0] = 100;	// 下面的输出，100跟着一起改了，因为是浅拷贝
+        a2.setName("朵朵");	// 下面的输出，原始对象还是花花，这个与 String 的底层实现有关，String是不可变的，这里事实上是在 字符串常量池 中new了一个"朵朵"，然后将引用赋值给了 a2.name，没有改动原来a2.name和a1.name指向的 "花花" 所在地址的值。 
 
         System.out.println("原始对象：" + a1);
         System.out.println("克隆对象：" + a2);
@@ -874,6 +610,16 @@ public static void main(String[] args) {
 ---
 
 #### **（2）与同名方法构成重载**
+
+> 有关重载的面试时重要考点：**说明 `重载(Overloading)` 和 `重写/覆盖(Override)` 的区别**
+>
+> 他们是多态的三种表现形式之二（还有一个对象的多态）
+>
+> - 重载 是编译时多态（静态多态），表现为同一个类中有多个同名方法但是参数不同
+> - 重写/覆盖 是运行时多态（动态多态），表现为子类继承时重写父类的方法
+>
+> 面向对象的三个特征：封装、继承、多态
+
 - **定义**：如果一个类中有多个方法名称相同，但参数类型或数量不同，可变参数方法与其他同名方法会构成**方法重载**。
 - **示例**：
   ```java
@@ -949,59 +695,7 @@ public static void main(String[] args) {
 
 ---
 
-### 4.1.3、**完整示例**
-```java
-public class VariableArgsDemo {
-    // 方法接受可变参数
-    public void printNumbers(int... numbers) {
-        if (numbers.length == 0) {
-            System.out.println("No numbers provided");
-        } else {
-            for (int number : numbers) {
-                System.out.println("Number: " + number);
-            }
-        }
-    }
-
-    public void display(String message, int... nums) {
-        System.out.println("Message: " + message);
-        for (int num : nums) {
-            System.out.println("Number: " + num);
-        }
-    }
-
-    public static void main(String[] args) {
-        VariableArgsDemo demo = new VariableArgsDemo();
-
-        // 示例1：使用可变参数
-        demo.printNumbers(); // 不传入参数
-        demo.printNumbers(10); // 传入1个参数
-        demo.printNumbers(1, 2, 3, 4, 5); // 传入多个参数
-
-        // 示例2：与其他参数结合
-        demo.display("Numbers:", 5, 10, 15); // 可变参数结合固定参数
-    }
-}
-```
-
-### 4.1.4、**运行结果**
-```
-No numbers provided
-Number: 10
-Number: 1
-Number: 2
-Number: 3
-Number: 4
-Number: 5
-Message: Numbers:
-Number: 5
-Number: 10
-Number: 15
-```
-
----
-
-### 4.1.5、**总结**
+### 4.1.3、**总结**
 1. 可变参数允许接收任意数量的参数，包括0个。
 2. 与同名方法构成重载，方法调用时根据参数的数量或类型匹配合适的方法。
 3. 可变参数底层是数组，因此不能同时使用数组和可变参数。
@@ -1143,33 +837,33 @@ JavaBean 是一种遵循特定规则的 Java 类，主要特点是封装数据�
 ### 4.3.3、**常见的注解**
 以下是一些常见的 Java 注解及其功能：
 
-#### **4.3.3.4 编译器相关的注解**
+#### **4.3.3.1 编译器相关的注解**
 这些注解主要用于提示编译器执行特定的检查或行为：
-- `@Override`  
+- `@Override` 
   指示当前方法重写了父类的方法。
   
-- `@Deprecated`  
+- `@Deprecated` 
   标记某个方法或类已过时，不建议使用。
   
-- `@SuppressWarnings`  
+- `@SuppressWarnings` 
   抑制编译器警告。
 
 ---
 
-#### **4.3.3.4 运行时相关的注解**
+#### **4.3.3.2 运行时相关的注解**
 这些注解通常与框架（如 Spring、Hibernate 等）结合使用，用于改变运行时行为：
-- `@Entity`  
+- `@Entity` 
   用于标记一个类为数据库实体类（通常在 Hibernate 中使用）。
   
-- `@Autowired`  
+- `@Autowired` 
   用于依赖注入（通常在 Spring 中使用）。
   
-- `@RequestMapping`  
+- `@RequestMapping` 
   在 Spring MVC 中，用于映射 HTTP 请求到控制器方法。
 
 ---
 
-#### **4.3.3.4 自定义注解**
+#### **4.3.3.3 自定义注解**
 开发者可以根据需要定义自己的注解。
 
 **示例：定义和使用自定义注解**
