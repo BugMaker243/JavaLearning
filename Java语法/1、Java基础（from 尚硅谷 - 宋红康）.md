@@ -842,11 +842,29 @@ JavaBean 是一种遵循特定规则的 Java 类，主要特点是封装数据�
 - `@Override` 
   指示当前方法重写了父类的方法。
   
+  - 用于检测被标记的方法为有效的重写方法，如果不是，则报编译错误！
+  
+  - 只能标记在方法上。
+  
+  - 它会被编译器程序读取。
+  
 - `@Deprecated` 
   标记某个方法或类已过时，不建议使用。
   
+  - 用于表示被标记的数据已经过时，不推荐使用。
+  
+  - 可以用于修饰 属性、方法、构造、类、包、局部变量、参数。
+  
+  - 它会被编译器程序读取。
+  
 - `@SuppressWarnings` 
   抑制编译器警告。
+  
+  - 抑制编译警告。当我们不希望看到警告信息的时候，可以使用 SuppressWarnings 注解来抑制警告信息
+  
+  - 可以用于修饰类、属性、方法、构造、局部变量、参数
+  
+  - 它会被编译器程序读取。
 
 ---
 
@@ -912,5 +930,572 @@ public class Main {
    - `CLASS`：在字节码中存在，但运行时不可用（默认）。
    - `RUNTIME`：在运行时也可以通过反射获取。
 
+### 4.3.5、常见的Annotation作用
+
+**示例1：生成文档相关的注解**
+
+```java
+@author 标明开发该类模块的作者，多个作者之间使用,分割
+@version 标明该类模块的版本
+@see 参考转向，也就是相关主题
+@since 从哪个版本开始增加的
+@param 对方法中某参数的说明，如果没有参数就不能写
+@return 对方法返回值的说明，如果方法的返回值类型是void就不能写
+@exception 对方法可能抛出的异常进行说明 ，如果方法没有用throws显式抛出的异常就不能写
+```
+
+**示例2：在编译时进行格式检查(JDK内置的三个基本注解)**
+
+`@Override`: 限定重写父类方法，该注解只能用于方法
+
+`@Deprecated`: 用于表示所修饰的元素(类，方法等)已过时。通常是因为所修饰的结构危险或存在更好的选择
+
+`@SuppressWarnings`: 抑制编译器警告
+
+**示例3：跟踪代码依赖性，实现替代配置文件功能**
+
+- Servlet3.0提供了注解(annotation)，使得不再需要在web.xml文件中进行Servlet的部署。
+
+- Spring框架中关于“事务”的管理
 
 
+
+# =====
+
+# 5、泛型(Generic)
+
+## 1.认识泛型
+
+泛型就是给方法或类接收的数据类型作说明，保证java的类型安全
+
+
+
+## 2. 使用泛型举例
+
+### 2.1 集合中使用泛型
+
+**集合中使用泛型时：**
+
+<img src="http://jason243.online/javase_songhongkang/Generic/java001.png" alt="image-20220411001549747" style="zoom:80%;" />
+
+> Java泛型可以保证如果程序在编译时没有发出警告，运行时就不会产生ClassCastException异常。即，把不安全的因素在编译期间就排除了，而不是运行期；既然通过了编译，那么类型一定是符合要求的，就避免了类型转换。
+>
+> 同时，代码更加简洁、健壮。
+>
+> **把一个集合中的内容限制为一个特定的数据类型，这就是generic背后的核心思想。**
+
+
+
+### 2.2 比较器中使用泛型
+
+```java
+package com.atguigu.generic;
+
+import java.util.Comparator;
+
+class CircleComparator1 implements Comparator<Circle> {	//实现泛型
+
+    @Override
+    public int compare(Circle o1, Circle o2) {
+        //不再需要强制类型转换，代码更简洁
+        return Double.compare(o1.getRadius(), o2.getRadius());
+    }
+}
+
+//测试类
+public class TestHasGeneric {
+    public static void main(String[] args) {
+        CircleComparator1 com = new CircleComparator1();
+        System.out.println(com.compare(new Circle(1), new Circle(2)));
+
+        //System.out.println(com.compare("圆1", "圆2"));
+        //编译错误，因为"圆1", "圆2"不是Circle类型，是String类型，编译器提前报错，
+        //而不是冒着风险在运行时再报错。
+    }
+}
+```
+
+
+
+### 2.3 相关使用说明
+
+- 在创建集合对象的时候，可以指明泛型的类型。
+
+  具体格式为：
+
+  ```java
+  List<Integer> list = new ArrayList<Integer>();
+  
+  List<Integer> list = new ArrayList<>(); //类型推断
+  ```
+
+- 泛型，也称为泛型参数，即参数的类型，只能使用引用数据类型进行赋值。（不能使用基本数据类型，可以使用包装类替换）
+
+- 集合声明一旦指明泛型，类或接口内部，凡是使用泛型参数的位置，都指定为具体的参数类型。如果没有指明的话，看做是Object类型。
+
+
+
+## 3. 自定义泛型结构
+
+### 3.1 泛型的基础说明
+
+**1、<类型>这种语法形式就叫泛型。**
+
+- <类型>的形式我们称为类型参数，这里的"类型"习惯上使用T表示，是Type的缩写。即：<T>。
+- <T>：代表未知的数据类型，我们可以指定为<String>，<Integer>，<Circle>等。
+
+**2、在哪里可以声明类型变量\<T>**
+
+- 声明类或接口时，在类名或接口名后面声明泛型类型，我们把这样的类或接口称为`泛型类`或`泛型接口`。
+
+```java
+【修饰符】 class 类名<类型变量列表> 【extends 父类】 【implements 接口们】{
+    
+}
+【修饰符】 interface 接口名<类型变量列表> 【implements 接口们】{
+    
+}
+
+//例如：
+public class ArrayList<E>    
+public interface Map<K,V>{
+    ....
+}    
+```
+
+- 声明方法时，在【修饰符】与返回值类型之间声明类型变量，我们把声明了类型变量的方法，称为泛型方法。
+
+```java
+[修饰符] <类型变量列表> 返回值类型 方法名([形参列表])[throws 异常列表]{
+    //...
+}
+
+//例如：java.util.Arrays类中的
+public static <T> List<T> asList(T... a){
+    ....
+}
+```
+
+### 3.2 自定义泛型类或泛型接口
+
+当我们在类或接口中定义某个成员时，该成员的相关类型是不确定的，而这个类型需要在使用这个类或接口时才可以确定，那么我们可以使用泛型类、泛型接口。
+
+#### 3.2.1 说明
+
+1. **定义泛型后，类的内部（属性、方法、构造器等）可以使用泛型**  
+
+   ```java
+   public class Box<T> { // 定义泛型类 Box，T 是类型参数
+       private T value; // 属性使用泛型 T
+   
+       public Box(T value) { // 构造器使用泛型 T
+           this.value = value;
+       }
+   
+       public T getValue() { // 方法返回值使用泛型 T
+           return value;
+       }
+   }
+   
+   // 使用示例
+   Box<Integer> intBox = new Box<>(123); // T 被替换为 Integer
+   System.out.println(intBox.getValue()); // 输出：123
+   ```
+
+2. **如果不指定泛型类型，默认为 Object，但不建议这样使用**  
+
+   ```java
+   Box box = new Box("String Value"); // 未指定泛型，默认为 Object
+   System.out.println(box.getValue()); // 输出：String Value
+   ```
+
+3. **泛型只能使用引用数据类型，不能使用基本数据类型**  
+
+4. **子类继承或实现泛型类时，可以指定具体类型，也可以继续保留泛型**  
+
+   ```java
+   // 子类保留泛型
+   public class GenericSubClass<T> extends Box<T> {
+       public GenericSubClass(T value) {
+           super(value);
+       }
+   }
+   
+   // 子类指定具体类型
+   public class StringBox extends Box<String> {
+       public StringBox(String value) {
+           super(value);
+       }
+   }
+   
+   GenericSubClass<Integer> genericSubClass = new GenericSubClass<>(100);
+   System.out.println(genericSubClass.getValue()); // 输出：100
+   
+   StringBox stringBox = new StringBox("Hello");
+   System.out.println(stringBox.getValue()); // 输出：Hello
+   ```
+
+
+
+#### 3.2.2 注意
+
+1. **泛型可以有多个参数** 
+
+**示例**：
+
+```java
+   public class Pair<K, V> { // 定义泛型类，K 和 V 是两个类型参数
+       private K key;
+       private V value;
+   
+       public Pair(K key, V value) {
+           this.key = key;
+           this.value = value;
+       }
+   
+       public K getKey() {
+           return key;
+       }
+   
+       public V getValue() {
+           return value;
+       }
+   }
+   
+   // 使用 Pair 类
+   Pair<String, Integer> pair = new Pair<>("Age", 25);
+   System.out.println(pair.getKey() + ": " + pair.getValue()); // 输出：Age: 25
+```
+
+2. **JDK 7+ 支持泛型推断** 
+
+   ```java
+   List<String> list = new ArrayList<>(); // 类型推断，省略右侧的 <String>
+   ```
+
+3. **不能直接创建泛型数组，但可以用类型转换实现** 
+
+   **示例**：
+
+   参考：ArrayList源码中声明：Object[] elementData，而非泛型参数类型数组。
+
+   ```java
+   // 错误：不能直接 new 泛型数组
+   // T[] array = new T[10]; 
+   
+   // 正确：通过 Object 转型
+   Object[] objArray = new Object[10];
+   Integer[] intArray = (Integer[]) objArray;
+   
+   ```
+
+4. **异常类不能是泛型的** 
+
+   **示例**：
+
+   ```java
+   // 错误：泛型类不能继承 Throwable
+   // public class MyException<T> extends Exception {}
+   
+   // 正确：使用具体类型定义异常类
+   public class MyException extends Exception {
+       public MyException(String message) {
+           super(message);
+       }
+   }
+   ```
+
+5. **不可以在静态方法中使用类的泛型**
+
+   **原因**：
+   静态方法在类加载时就已经存在，与类的实例无关，而类的泛型是在创建实例时具体化的。因此，静态方法无法使用类级别的泛型参数。
+
+
+
+### 3.3 自定义泛型方法
+
+如果我们定义类、接口时没有使用<泛型参数>，但是某个方法形参类型不确定时，这个方法可以单独定义<泛型参数>。
+
+#### 3.3.1 说明
+
+- 泛型方法的格式：
+
+```java
+[访问权限]  <泛型>  返回值类型  方法名([泛型标识 参数名称])  [抛出的异常]{
+    
+}
+```
+
+- 方法，也可以被泛型化，与其所在的类是否是泛型类没有关系。
+- 泛型方法中的泛型参数在方法被调用时确定。
+- 泛型方法可以根据需要，声明为static的。
+
+#### 3.3.2 举例
+
+```java
+public class DAO {
+
+    public <E> E get(int id, E e) {
+
+        E result = null;
+
+        return result;
+    }
+}
+```
+
+
+
+## 4. 泛型在继承上的体现
+
+如果B是A的一个子类型（子类或者子接口），而G是具有泛型声明的类或接口，G\<B>并不是G\<A>的子类型！
+
+比如：String是Object的子类，但是List\<String>并不是List\<Object>的子类。
+
+<img src="http://jason243.online/javase_songhongkang/Generic/java002.png" alt="java002" style="zoom:67%;" />
+
+```java
+public void testGenericAndSubClass() {
+    Person[] persons = null;
+    Man[] mans = null;
+    //Person[] 是 Man[] 的父类
+    persons = mans;
+
+    Person p = mans[0];
+
+    // 在泛型的集合上
+    List<Person> personList = null;
+    List<Man> manList = null;
+    //personList = manList;(报错)
+}
+```
+
+
+
+## 5. 通配符的使用
+
+当我们声明一个变量/形参时，这个变量/形参的类型是一个泛型类或泛型接口，例如：Comparator\<T>类型，但是我们仍然无法确定这个泛型类或泛型接口的类型变量\<T>的具体类型，此时我们考虑使用类型通配符  `?` 。
+
+### 5.1 通配符的理解
+
+使用类型通配符：？ 
+
+比如：`List<?>`，`Map<?,?>`
+
+​            `List<?>`是`List<String>`、`List<Object>`等各种泛型List的父类。
+
+
+
+### 5.2 通配符的读与写
+
+**写操作：**
+
+将任意元素加入到其中不是类型安全的：
+
+```java
+Collection<?> c = new ArrayList<String>();
+
+c.add(new Object()); // 编译时错误
+```
+
+**泛型的实际存储类型是未知的**
+
+- 当你声明一个 `Collection<?> c = new ArrayList<String>();` 时：
+  - `c` 的实际存储类型是 `ArrayList<String>`。
+  - 编译器只知道 `c` 是一个 `Collection`，但不知道它的具体元素类型是什么。
+
+**对于 `Collection<?>`，`E` 是一个未知类型（`?`）。**
+
+- 编译器不知道 `E` 具体是什么类型，所以任何非 `null` 值都可能不符合集合的实际类型要求。
+- **因此，编译器禁止任何写操作**，避免潜在的类型不匹配。
+
+唯一可以插入的元素是null，因为它是所有引用类型的默认值。
+
+
+
+**读操作：**
+
+另一方面，读取List<?>的对象list中的元素时，永远是安全的，因为不管 list 的真实类型是什么，它包含的都是Object。
+
+```java
+public static void main(String[] args) {
+    List<?> list = null;
+    list = new ArrayList<String>();
+    list = new ArrayList<Double>();
+    // list.add(3);//编译不通过
+    list.add(null);
+
+    List<String> l1 = new ArrayList<String>();
+    List<Integer> l2 = new ArrayList<Integer>();
+    l1.add("尚硅谷");
+    l2.add(15);
+    read(l1);
+    read(l2);
+}
+
+public static void read(List<?> list) {
+    for (Object o : list) {
+        System.out.println(o);
+    }
+}
+```
+
+
+
+### 5.3 使用注意点
+
+注意点1：编译错误：不能用在泛型方法声明上，返回值类型前面<>不能使用"?"
+
+```java
+/*
+	public static <?> void test(ArrayList<?> list){
+	
+	}
+*/
+```
+
+注意点2：编译错误：不能用在泛型类的声明上
+
+```java
+/*
+	class GenericTypeClass<?>{
+
+	}
+*/
+```
+
+注意点3：编译错误：不能用在创建对象上，右边属于创建集合对象
+
+```java
+//	ArrayList<?> list2 = new ArrayList<?>();
+```
+
+
+
+### 5.4 有限制的通配符
+
+- `<?>`
+
+  - 允许所有泛型的引用调用
+
+- 通配符指定上限：`<? extends 类/接口 >`
+
+  - 使用时指定的类型必须是继承某个类（子类），或者实现某个接口，即<= 
+
+- 通配符指定下限：`<? super 类/接口 >`
+
+  - 使用时指定的类型必须是操作的类或接口，或者是操作的类的父类或接口的父接口，即>=
+
+- 说明：
+
+  ```java
+  <? extends Number>     //(无穷小 , Number]
+  //只允许泛型为Number及Number子类的引用调用
+  
+  <? super Number>      //[Number , 无穷大)
+  //只允许泛型为Number及Number父类的引用调用
+  
+  <? extends Comparable>
+  //只允许泛型为实现Comparable接口的实现类的引用调用
+  ```
+
+
+
+### **5.4.1 `<? extends T>`：指定上限**
+
+**含义**
+
+- `? extends T` 表示泛型类型是 `T` 或 `T 的子类`。
+- 它的目的是限制一个泛型可以接受的类型，确保类型是 **T 或更小的范围**（子类）。
+
+**特点**
+
+- **只能读取，不允许写入**（除了 `null`）。
+- 使用这种边界时，你可以安全地读取集合中的元素，知道它们是 `T` 或 `T` 的子类，但不能向集合中写入元素，因为无法确定具体的子类型。
+
+**类比**
+
+把 `<? extends T>` 想象为一个窗口，只能看，但不能放东西。
+
+**例子**
+
+```java
+public void printNumbers(List<? extends Number> list) {
+    for (Number num : list) {
+        System.out.println(num);
+    }
+}
+
+// 以下均合法：
+printNumbers(new ArrayList<Integer>()); // Integer 是 Number 的子类
+printNumbers(new ArrayList<Double>());  // Double 是 Number 的子类
+
+```
+
+- `list` 的泛型类型必须是 `Number` 或 `Number` 的子类（如 `Integer`、`Double`）。
+- 你可以安全地读取 `Number` 或其子类的值。
+
+**但你不能写入**，例如：
+
+```java
+list.add(new Integer(5)); // 编译错误，泛型类型未知
+```
+
+原因是：`list` 可能是 `ArrayList<Double>`，向其中添加 `Integer` 是不安全的。
+
+
+
+### **5.4.2 `<? super T>`：指定下限**
+
+**含义**
+
+- `? super T` 表示泛型类型是 `T` 或 `T 的父类`。
+- 它的目的是限制一个泛型可以接受的类型，确保类型是 **T 或更大的范围**（父类）。
+
+**特点**
+
+- **允许写入，限制读取**。
+- 你可以向集合中添加类型为 `T` 或其子类的元素，但读取时只能保证返回 `Object` 类型，因为父类范围可能过于宽泛。
+
+**类比**
+
+把 `<? super T>` 想象为一个容器，可以放东西，但取出来的内容可能不知道具体类型。
+
+**例子**
+
+```java
+public void addNumbers(List<? super Integer> list) {
+    list.add(5); // 合法，Integer 是 Integer 或其子类
+    list.add(new Integer(10)); // 合法
+}
+
+// 以下均合法：
+addNumbers(new ArrayList<Integer>());   // Integer 是 Integer 本身
+addNumbers(new ArrayList<Number>());    // Number 是 Integer 的父类
+addNumbers(new ArrayList<Object>());    // Object 是 Number 的父类
+```
+
+- `list` 的泛型类型必须是 `Integer` 或 `Integer` 的父类（如 `Number`、`Object`）。
+- 你可以向 `list` 中添加 `Integer`，因为它的范围保证兼容。
+
+**但你不能安全读取**，例如：
+
+```java
+Integer num = list.get(0); // 编译错误，泛型类型不确定
+Object obj = list.get(0);  // 合法，只能读取为 Object
+
+```
+
+原因是：`list` 可能是 `ArrayList<Object>`，返回的内容可能只是 `Object` 类型。
+
+### **5.4.3 总结对比**
+
+| **通配符**      | **含义**                | **可读性**              | **可写性**                  | **典型用途**                                     |
+| --------------- | ----------------------- | ----------------------- | --------------------------- | ------------------------------------------------ |
+| `<? extends T>` | 泛型必须是 `T` 或其子类 | **可以读取为 `T`**      | **不能写入（除了 `null`）** | 只需从集合中读取数据时，常用于生产者（Producer） |
+| `<? super T>`   | 泛型必须是 `T` 或其父类 | **只能读取为 `Object`** | **可以写入 `T` 或其子类**   | 需要向集合中添加数据时，常用于消费者（Consumer） |
+
+### **5.4.4 常见记忆法**
+
+- **`extends`（上限）**：你只知道类型是 `T` 或更窄（子类），所以只能安全读取，无法写入。
+- **`super`（下限）**：你只知道类型是 `T` 或更宽（父类），所以可以安全写入 `T` 或其子类，但读取的类型只能保证是 `Object`。
