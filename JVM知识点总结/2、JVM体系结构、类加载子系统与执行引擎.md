@@ -4,7 +4,7 @@
 
 ## 1.1 认识
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0010.png">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0010.png" style="zoom:80%;" />
 
 
 
@@ -37,11 +37,11 @@
 
 第一种形式：
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0015.png">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_001/0015.png" style="zoom:70%;" />
 
 第二种形式：
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0003.jpg">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0003.jpg" style="zoom:60%;" />
 
 整体结构图：
 
@@ -101,7 +101,7 @@ Java编译器输入的指令流基本上是一种**基于栈的指令集架构**
 
 ### 2.1.1 简图
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0001.png">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0001.png" style="zoom:80%;" />
 
 ### 2.1.2 详细图
 
@@ -332,7 +332,7 @@ Java类只有主动调用的时候才会进行初始化，具体情况有：
 
 <img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0014.png" style="zoom:75%;">
 
-- **因为引导类加载器右 C/C++ 语言，我们获取不到**
+- **因为引导类加载器使用 C/C++ 语言，我们获取不到**
 - **系统类加载器是全局唯一的**
 
 
@@ -414,13 +414,13 @@ Java类只有主动调用的时候才会进行初始化，具体情况有：
 
 ClassLoader类，它是一个抽象类，其后所有的类加载器都继承自ClassLoader（不包括启动类加载器）
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0017.png">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0017.png" style="zoom:70%;" />
 
 
 
 #### 获取ClassLoader途径
 
-<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0019.png">
+<img src="https://npm.elemecdn.com/youthlql@1.0.8/JVM/chapter_002/0019.png" style="zoom:60%;" />
 
 
 
